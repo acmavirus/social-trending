@@ -15,7 +15,7 @@ async def get_news(
 ):
     db = get_db()
     
-    query = {}
+    query = {"is_duplicate": {"$ne": True}}
     if source:
         query["source_name"] = source
     if search:

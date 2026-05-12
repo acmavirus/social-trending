@@ -81,9 +81,16 @@ async def process_pending_notifications(limit: int = 20):
     if not conditions:
         return
 
-    # Limit to very recent ones to avoid ancient spam
+    # Skip AI duplicates and limit to very recent ones
+    full_query = {
+        "$and": [
+            {"$or": conditions},
+            {"is_duplicate": {"$ne": True}}
+        ]
+    }
+
     from pymongo import DESCENDING
-    cursor = db.articles.find({"$or": conditions}).sort("published_at", DESCENDING).limit(limit)
+    cursor = db.articles.find(full_query).sort("published_at", DESCENDING).limit(limit)
     
     async for doc in cursor:
         # Convert to full object

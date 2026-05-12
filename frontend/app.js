@@ -135,6 +135,10 @@ function setupEventListeners() {
             document.getElementById('telegram-enabled').checked = config.telegram_enabled;
             document.getElementById('telegram-token').value = config.telegram_bot_token || '';
             document.getElementById('telegram-chat').value = config.telegram_chat_id || '';
+
+            // Load AI Config
+            document.getElementById('ai-enabled').checked = config.ai_deduplication_enabled || false;
+            document.getElementById('gemini-key').value = config.gemini_api_key || '';
             
             settingsModal.classList.remove('hidden');
         } catch (err) {
@@ -158,7 +162,10 @@ function setupEventListeners() {
             discord_webhook_url: document.getElementById('discord-url').value,
             telegram_enabled: document.getElementById('telegram-enabled').checked,
             telegram_bot_token: document.getElementById('telegram-token').value,
-            telegram_chat_id: document.getElementById('telegram-chat').value
+            telegram_chat_id: document.getElementById('telegram-chat').value,
+            // Append AI fields
+            gemini_api_key: document.getElementById('gemini-key').value,
+            ai_deduplication_enabled: document.getElementById('ai-enabled').checked
         };
 
         try {

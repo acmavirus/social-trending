@@ -34,6 +34,8 @@ class ArticleInDB(ArticleBase):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     notified_discord: bool = False
     notified_telegram: bool = False
+    is_duplicate: bool = False
+    duplicate_of_title: Optional[str] = None
     
     model_config = ConfigDict(
         populate_by_name=True,
@@ -43,6 +45,8 @@ class ArticleInDB(ArticleBase):
 
 class ArticleResponse(ArticleBase):
     id: str
+    is_duplicate: bool = False
+    duplicate_of_title: Optional[str] = None
 
     model_config = ConfigDict(
         populate_by_name=True
@@ -78,3 +82,7 @@ class NotificationSettings(BaseModel):
     telegram_enabled: bool = False
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
+    
+    # AI Feature Settings
+    gemini_api_key: str = ""
+    ai_deduplication_enabled: bool = False
