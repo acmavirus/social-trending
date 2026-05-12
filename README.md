@@ -1,8 +1,8 @@
-# ⚡ TrendSense - Real-Time Intelligent RSS Aggregator
+# ⚡ TrendSense - Real-Time Intelligent AI Aggregator
 
-A sophisticated, enterprise-grade containerized full-stack ecosystem designed for high-throughput real-time news acquisition, sophisticated cleaning, and dynamic visualizations. 
+A sophisticated, enterprise-grade containerized full-stack ecosystem designed for high-throughput real-time news acquisition, advanced AI-driven cleanups, and dynamic cross-platform broadcasting visualizations. 
 
-TrendSense automates knowledge retrieval by tracking configured global and domestic news endpoints utilizing a highly reactive architecture.
+TrendSense automates universal knowledge retrieval by tracking global news endpoints utilizing a highly reactive, AI-enhanced architecture.
 
 ---
 
@@ -11,20 +11,20 @@ TrendSense automates knowledge retrieval by tracking configured global and domes
 Built on a cutting-edge, Dockerized Microservices paradigm:
 
 - **⚡ API Backend Core**: `Python 3.11` driven by `FastAPI` for asynchronous non-blocking throughput.
-- **🤖 Intelligent Crawler**: Custom asynchronous aggregator leveraging `Feedparser`, `httpx`, and `APScheduler` for periodic automated ingestion workflows.
-- **💿 Data Persistence Layer**: `MongoDB` cluster utilizing non-relational high-density schema for flexible JSON feed normalization with built-in duplication protection.
-- **🎨 Advanced Presentation Layer**: Stunning Single Page Application (SPA) built purely on modern **Vanilla CSS & JS** featuring dark-mode optimization, glassmorphism aesthetics, and dynamic state synchronization.
-- **🌐 Gateway Edge Routing**: `Nginx` acting as reverse proxy providing efficient static delivery and seamless CORS resolution to backplane services.
+- **🧠 Cognitive Engine**: Integrated `Google Gemini 1.5 Flash` LLM for ultra-low latency semantic event clustering.
+- **🤖 Intelligent Crawler**: Custom asynchronous aggregator leveraging `Feedparser`, `httpx`, and `APScheduler` for periodic autonomous workflows.
+- **💿 Data Persistence Layer**: `MongoDB` cluster utilizing non-relational schema for flexible JSON feed normalization.
+- **🎨 Advanced Presentation Layer**: Stunning Single Page Application (SPA) built on **Vanilla CSS & JS** featuring dark-mode optimization, glassmorphism aesthetics, and dynamic state synchronization.
 
 ---
 
 ## 💎 Core Features
 
-1. **Autonomous Knowledge Collection**: Automated cycle scheduling polls distributed endpoints every 15 minutes, silently merging high-velocity events.
-2. **Dynamic Ecosystem Ingestion**: Fully integrated User Interface workflow to dynamically inject, delete, and reconfigure operational RSS feeds natively directly into the Database.
-3. **Deterministic Intelligence Filters**: Advanced substring pattern recognition and instant categorical source isolation filtering.
-4. **Sub-second State Syncing**: Automated background synchronization triggers immediately upon system reconfiguration—zero cooldown necessary.
-5. **Zero-Touch Orchestration**: Single command unified cluster instantiation through isolated Docker infrastructure networks.
+1. **Autonomous Knowledge Collection**: Automated scheduling cycles poll distributed endpoints every 15 minutes.
+2. **🧠 Gemini AI Semantic De-duplication**: High-density LLM batch analytics that comprehend cross-agency reportings. If multiple outlets report the exact same event, AI collapses the noise and presents you only clean, unique distinct signals.
+3. **🔗 Dynamic Webhook Broadcasts**: Sub-second native pushed alerts to **Discord Rich Embeds** and **Telegram Bots** configured purely through graphical interface.
+4. **🛡️ State-Aware Push Safety**: Resilient atomic check-locking ensures any unique event delivers exactly once to active output streams. No spam, no repeats.
+5. **🎛️ Zero-Touch Live Admin**: Fully integrated Dashboard sidebar to dynamically manage RSS sources, and configure system runtime preferences in real-time directly saved into MongoDB cluster.
 
 ---
 
@@ -41,34 +41,28 @@ Spin up the complete clustered ecosystem by executing:
 docker-compose up --build -d
 ```
 
-Upon cluster convergence, Docker automatically initiates:
-1. Specialized MongoDB cluster initialization.
-2. Hypercorn/Uvicorn-wrapped FastAPI Application Engine (Internally listening on `:8000`).
-3. Hardened Nginx Reverse Proxy rendering presentation assets (Listening externally on `:8080`).
+Upon cluster convergence, the orchestration routine handles standard deployment:
+1. High-availability MongoDB cluster.
+2. Uvicorn-wrapped FastAPI Application Engine.
+3. Nginx Reverse Proxy rendering presentation assets.
 
 ### Ecosystem Entry Points
 
 - **Production Presentation UI**: [http://localhost:8080](http://localhost:8080)
 - **Reactive API Gateway Hub**: [http://localhost:8000](http://localhost:8000)
-- **Standard OpenAPI Compliance Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **OpenAPI Compliance Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 📝 Source Operations Configuration
+## 🛠 Operational Dynamic Configuration
 
-Out-of-the-box defaults leverage standard domestic indices (VnExpress, Tuổi Trẻ) alongside foundational global giants (NYT, The Guardian, Wired, SCMP). 
+Everything is administered on-the-fly through the Web Dashboard via the **"Notifier Setup"** ⚙️ and dynamic sidebar controls.
 
-To administer and refine this baseline dynamically, access the sidebar controls through the Dashboard UI or via custom scripts targeted at our `/api/sources` endpoints.
+### 🔔 Push Notification Channels
+- **Discord**: Input Channel Webhook to convert textual items into rich aesthetic cards.
+- **Telegram**: Input BotFather API Token and numeric ChatID to receive markdown-rendered text feeds.
+- Set master toggles to LIVE to initiate instant flow, or STOP instantly with one click.
 
----
-
-## 🔔 Dynamic Notifiers Configuration
-
-Enable continuous, push-based alerting to your personal channels by configuring the following variables within the `backend` container environment in `docker-compose.yml`:
-
-### 👾 Discord Setup
-- `DISCORD_WEBHOOK_URL`: Paste the server channel Webhook URL here. TrendSense will auto-format articles into modern, high-visibility Rich Embeds with embedded photography.
-
-### ✈️ Telegram Setup
-- `TELEGRAM_BOT_TOKEN`: Generate a specialized token via BotFather.
-- `TELEGRAM_CHAT_ID`: Enter the destination numeric Group/User Chat ID. Articles broadcast natively using Markdown rendering engine.
+### 🧠 Artificial Intelligence Layer
+- **Gemini Flash Activation**: Simply paste your Google Generative AI key and toggle on the brain icon.
+- All incoming streams undergo immediate vectorized collision analysis against existing cache records instantly.
