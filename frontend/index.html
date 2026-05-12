@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Trending | Real-time News Aggregator</title>
+    <meta name="description" content="Modern news aggregation system powered by RSS technology.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-bolt-lightning"></i>
+                <span>Trending</span>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="active" data-filter="all">
+                    <i class="fa-solid fa-fire"></i>
+                    <span>Latest Feed</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <h3>Sources</h3>
+                    <button id="open-modal-btn" class="btn-icon" title="Add Source">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                <ul id="source-list" class="source-list">
+                    <!-- Populated by JS -->
+                    <li class="loading-item">Loading...</li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="refresh-btn" class="btn-primary">
+                    <i class="fa-solid fa-rotate"></i> Fetch New
+                </button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Search trends...">
+                </div>
+                
+                <div class="user-controls">
+                    <span class="status-badge">
+                        <span class="dot"></span> Live
+                    </span>
+                </div>
+            </header>
+
+            <div class="content-header">
+                <h1 id="page-title">Latest Discovery</h1>
+                <p class="subtitle">Monitoring aggregated content across configured platforms.</p>
+            </div>
+
+            <div id="loader" class="loader-wrapper">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="news-grid" class="news-grid">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div id="empty-state" class="empty-state hidden">
+                <i class="fa-regular fa-newspaper"></i>
+                <h3>No news found</h3>
+                <p>Try adjusting your filters or search terms.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Source Modal -->
+    <div id="add-source-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Add New RSS Source</h2>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <form id="add-source-form">
+                <div class="form-group">
+                    <label for="src-name">Source Name</label>
+                    <input type="text" id="src-name" placeholder="e.g. TechCrunch" required>
+                </div>
+                <div class="form-group">
+                    <label for="src-url">RSS Feed URL</label>
+                    <input type="url" id="src-url" placeholder="https://example.com/feed.xml" required>
+                </div>
+                <div class="form-group">
+                    <label for="src-cat">Category</label>
+                    <input type="text" id="src-cat" placeholder="General" value="General">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-btn" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Source</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
