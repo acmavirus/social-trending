@@ -116,6 +116,70 @@ function setupEventListeners() {
             submitBtn.disabled = false;
         }
     });
+
+    // Settings Modal Logic
+    const settingsModal = document.getElementById('settings-modal');
+    const openSettingsBtn = document.getElementById('open-settings-link');
+    const closeSettingsBtns = [document.getElementById('close-settings-btn'), document.getElementById('cancel-settings-btn')];
+    const settingsForm = document.getElementById('settings-form');
+
+    openSettingsBtn.addEventListener('click', async () => {
+        // Load current settings first
+        try {
+            const response = await fetch(`${API_BASE}/api/settings/`);
+            const config = await response.json();
+            
+            document.getElementById('discord-enabled').checked = config.discord_enabled;
+            document.getElementById('discord-url').value = config.discord_webhook_url || '';
+            
+            document.getElementById('telegram-enabled').checked = config.telegram_enabled;
+            document.getElementById('telegram-token').value = config.telegram_bot_token || '';
+            document.getElementById('telegram-chat').value = config.telegram_chat_id || '';
+            
+            settingsModal.classList.remove('hidden');
+        } catch (err) {
+            alert('Could not load settings.');
+        }
+    });
+
+    closeSettingsBtns.forEach(btn => btn.addEventListener('click', () => settingsModal.classList.add('hidden')));
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) settingsModal.classList.add('hidden');
+    });
+
+    settingsForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = settingsForm.querySelector('button[type="submit"]');
+        saveBtn.innerText = 'Saving Configurations...';
+        saveBtn.disabled = true;
+
+        const configPayload = {
+            discord_enabled: document.getElementById('discord-enabled').checked,
+            discord_webhook_url: document.getElementById('discord-url').value,
+            telegram_enabled: document.getElementById('telegram-enabled').checked,
+            telegram_bot_token: document.getElementById('telegram-token').value,
+            telegram_chat_id: document.getElementById('telegram-chat').value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/api/settings/`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(configPayload)
+            });
+            if (response.ok) {
+                alert('Notifications configurations stored and activated successfully!');
+                settingsModal.classList.add('hidden');
+            } else {
+                throw new Error('Failed to update');
+            }
+        } catch (err) {
+            alert('Save failed: ' + err.message);
+        } finally {
+            saveBtn.innerText = 'Save Configurations';
+            saveBtn.disabled = false;
+        }
+    });
 }
 
 async function fetchSources() {

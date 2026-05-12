@@ -59,3 +59,16 @@ Upon cluster convergence, Docker automatically initiates:
 Out-of-the-box defaults leverage standard domestic indices (VnExpress, Tuổi Trẻ) alongside foundational global giants (NYT, The Guardian, Wired, SCMP). 
 
 To administer and refine this baseline dynamically, access the sidebar controls through the Dashboard UI or via custom scripts targeted at our `/api/sources` endpoints.
+
+---
+
+## 🔔 Dynamic Notifiers Configuration
+
+Enable continuous, push-based alerting to your personal channels by configuring the following variables within the `backend` container environment in `docker-compose.yml`:
+
+### 👾 Discord Setup
+- `DISCORD_WEBHOOK_URL`: Paste the server channel Webhook URL here. TrendSense will auto-format articles into modern, high-visibility Rich Embeds with embedded photography.
+
+### ✈️ Telegram Setup
+- `TELEGRAM_BOT_TOKEN`: Generate a specialized token via BotFather.
+- `TELEGRAM_CHAT_ID`: Enter the destination numeric Group/User Chat ID. Articles broadcast natively using Markdown rendering engine.

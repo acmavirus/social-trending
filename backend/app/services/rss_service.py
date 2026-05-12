@@ -8,6 +8,7 @@ from app.config import settings
 from app.database import get_db
 from app.models import ArticleInDB
 from pymongo.errors import DuplicateKeyError
+from app.services.notifier_service import broadcast_new_article
 import asyncio
 
 logger = logging.getLogger(__name__)
@@ -94,6 +95,8 @@ async def fetch_and_parse_feed(feed_config: dict):
             try:
                 await db.articles.insert_one(article.model_dump(by_alias=True, exclude={'id'}))
                 new_count += 1
+                # Fire dynamic alerts for the new item
+                await broadcast_new_article(article)
             except DuplicateKeyError:
                 # Already exists, skip
                 pass
@@ -120,4 +123,9 @@ async def run_all_aggregations():
         
     tasks = [fetch_and_parse_feed(feed) for feed in sources]
     await asyncio.gather(*tasks)
+    
+    # FINAL CHECK: Flush any and all remaining unsent alerts (max 30 items to avoid flood)
+    from app.services.notifier_service import process_pending_notifications
+    await process_pending_notifications(limit=30)
+    
     logger.info("Completed aggregation cycle.")

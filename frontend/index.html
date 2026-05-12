@@ -30,6 +30,10 @@
                     <i class="fa-solid fa-fire"></i>
                     <span>Latest Feed</span>
                 </li>
+                <li id="open-settings-link">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Notifier Setup</span>
+                </li>
             </ul>
             
             <div class="sidebar-section">
@@ -110,6 +114,53 @@
                 <div class="modal-footer">
                     <button type="button" id="cancel-btn" class="btn-secondary">Cancel</button>
                     <button type="submit" class="btn-primary">Save Source</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-container" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2>Notification Channels</h2>
+                <button id="close-settings-btn" class="close-btn">&times;</button>
+            </div>
+            <form id="settings-form">
+                <div class="settings-section">
+                    <div class="toggle-header">
+                        <h3><i class="fa-brands fa-discord"></i> Discord Webhook</h3>
+                        <label class="switch">
+                            <input type="checkbox" id="discord-enabled">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="url" id="discord-url" placeholder="https://discord.com/api/webhooks/...">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="toggle-header">
+                        <h3><i class="fa-brands fa-telegram"></i> Telegram Bot</h3>
+                        <label class="switch">
+                            <input type="checkbox" id="telegram-enabled">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Bot Token</label>
+                        <input type="text" id="telegram-token" placeholder="12345:ABCDE...">
+                    </div>
+                    <div class="form-group">
+                        <label>Chat ID</label>
+                        <input type="text" id="telegram-chat" placeholder="-10012345678">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="cancel-settings-btn" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Configurations</button>
                 </div>
             </form>
         </div>

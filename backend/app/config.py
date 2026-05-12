@@ -6,8 +6,12 @@ class Settings(BaseSettings):
     DB_NAME: str = os.getenv("DB_NAME", "social_trending")
     RSS_POLL_INTERVAL_MINUTES: int = 15
     
+    # Notification Settings
+    DISCORD_WEBHOOK_URL: str = os.getenv("DISCORD_WEBHOOK_URL", "")
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
+    
     RSS_FEEDS: list = [
-        # Sample Vietnamese news RSS feeds
         {"name": "VnExpress - Tin mới nhất", "url": "https://vnexpress.net/rss/tin-moi-nhat.rss", "category": "General"},
         {"name": "Tuổi Trẻ - Tin mới nhất", "url": "https://tuoitre.vn/rss/tin-moi-nhat.rss", "category": "General"},
         {"name": "Thanh Niên - Tin mới nhất", "url": "https://thanhnien.vn/rss/home.rss", "category": "General"},

@@ -9,6 +9,7 @@ from app.config import settings
 from app.services.rss_service import run_all_aggregations
 from app.routes.news import router as news_router
 from app.routes.sources import router as sources_router
+from app.routes.settings import router as settings_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -54,6 +55,7 @@ app.add_middleware(
 
 app.include_router(news_router)
 app.include_router(sources_router)
+app.include_router(settings_router)
 
 @app.get("/")
 async def root():

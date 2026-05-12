@@ -32,6 +32,8 @@ class ArticleBase(BaseModel):
 class ArticleInDB(ArticleBase):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    notified_discord: bool = False
+    notified_telegram: bool = False
     
     model_config = ConfigDict(
         populate_by_name=True,
@@ -69,3 +71,10 @@ class FeedSourceResponse(FeedSourceBase):
     model_config = ConfigDict(
         populate_by_name=True
     )
+
+class NotificationSettings(BaseModel):
+    discord_enabled: bool = False
+    discord_webhook_url: str = ""
+    telegram_enabled: bool = False
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
