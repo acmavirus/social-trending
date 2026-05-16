@@ -39,8 +39,13 @@ services:
       - backend
     ports:
       - "8080:80"
+    volumes:
+      - ./frontend/index.html:/usr/share/nginx/html/index.html
+      - ./frontend/style.css:/usr/share/nginx/html/style.css
+      - ./frontend/app.js:/usr/share/nginx/html/app.js
     networks:
       - app-network
+
 
 networks:
   app-network:

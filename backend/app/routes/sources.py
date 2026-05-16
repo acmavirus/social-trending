@@ -53,3 +53,22 @@ async def delete_source(source_id: str):
         raise HTTPException(status_code=404, detail="Source not found")
         
     return {"message": "Source deleted successfully"}
+
+@router.patch("/{source_id}/toggle")
+async def toggle_source(source_id: str, is_active: bool = Body(..., embed=True)):
+    from bson import ObjectId
+    db = get_db()
+    
+    if not ObjectId.is_valid(source_id):
+        raise HTTPException(status_code=400, detail="Invalid source ID")
+        
+    res = await db.sources.update_one(
+        {"_id": ObjectId(source_id)},
+        {"$set": {"is_active": is_active}}
+    )
+    
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Source not found")
+        
+    return {"message": f"Source {'activated' if is_active else 'deactivated'} successfully"}
+

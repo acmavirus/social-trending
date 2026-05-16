@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,13 @@
     <meta name="description" content="Modern news aggregation system powered by RSS technology.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="background-blobs">
         <div class="blob blob-1"></div>
@@ -24,7 +28,7 @@
                 <i class="fa-solid fa-bolt-lightning"></i>
                 <span>Trending</span>
             </div>
-            
+
             <ul class="nav-links">
                 <li class="active" data-filter="all">
                     <i class="fa-solid fa-fire"></i>
@@ -35,7 +39,7 @@
                     <span>Notifier Setup</span>
                 </li>
             </ul>
-            
+
             <div class="sidebar-section">
                 <div class="section-header">
                     <h3>Sources</h3>
@@ -62,7 +66,7 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="search-input" placeholder="Search trends...">
                 </div>
-                
+
                 <div class="user-controls">
                     <span class="status-badge">
                         <span class="dot"></span> Live
@@ -82,7 +86,7 @@
             <div id="news-grid" class="news-grid">
                 <!-- Populated by JS -->
             </div>
-            
+
             <div id="empty-state" class="empty-state hidden">
                 <i class="fa-regular fa-newspaper"></i>
                 <h3>No news found</h3>
@@ -121,67 +125,112 @@
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal-overlay hidden">
-        <div class="modal-container" style="max-width: 550px;">
+        <div class="modal-container"
+            style="max-width: 1200px; width: 90%; height: 85vh; display: flex; flex-direction: column; padding: 40px;">
+
             <div class="modal-header">
-                <h2>Notification Channels</h2>
+                <h2>System Settings</h2>
                 <button id="close-settings-btn" class="close-btn">&times;</button>
             </div>
-            <form id="settings-form">
-                <div class="settings-section">
-                    <div class="toggle-header">
-                        <h3><i class="fa-brands fa-discord"></i> Discord Webhook</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="discord-enabled">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <input type="url" id="discord-url" placeholder="https://discord.com/api/webhooks/...">
-                    </div>
+
+            <div class="settings-layout">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="notifications">
+                        <i class="fa-solid fa-bell"></i> Notifications
+                    </button>
+                    <button class="tab-btn" data-tab="rss-sources">
+                        <i class="fa-solid fa-rss"></i> RSS Sources
+                    </button>
+                    <button class="tab-btn" data-tab="ai-config">
+                        <i class="fa-solid fa-brain"></i> AI Intelligence
+                    </button>
                 </div>
 
-                <div class="settings-section">
-                    <div class="toggle-header">
-                        <h3><i class="fa-brands fa-telegram"></i> Telegram Bot</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="telegram-enabled">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>Bot Token</label>
-                        <input type="text" id="telegram-token" placeholder="12345:ABCDE...">
-                    </div>
-                    <div class="form-group">
-                        <label>Chat ID</label>
-                        <input type="text" id="telegram-chat" placeholder="-10012345678">
-                    </div>
-                </div>
+                <div class="settings-content">
+                    <form id="settings-form">
+                        <!-- Notifications Tab -->
+                        <div id="notifications-tab" class="tab-pane active">
+                            <div class="settings-section">
+                                <div class="toggle-header">
+                                    <h3><i class="fa-brands fa-discord"></i> Discord Webhook</h3>
+                                    <label class="switch">
+                                        <input type="checkbox" id="discord-enabled">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="url" id="discord-url"
+                                        placeholder="https://discord.com/api/webhooks/...">
+                                </div>
+                            </div>
 
-                <!-- NEW: AI Config Section -->
-                <div class="settings-section" style="border-left: 4px solid #1a73e8;">
-                    <div class="toggle-header">
-                        <h3><i class="fa-solid fa-brain" style="color: #1a73e8;"></i> AI Duplicate Prevention</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="ai-enabled">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <p style="font-size: 12px; color: #a1a1aa; margin-bottom: 12px;">Uses Gemini Flash to identify if different news agencies report the exact same event, automatically cleaning your feed.</p>
-                    <div class="form-group">
-                        <label>Gemini API Key</label>
-                        <input type="password" id="gemini-key" placeholder="AIzaSy...">
-                    </div>
-                </div>
+                            <div class="settings-section">
+                                <div class="toggle-header">
+                                    <h3><i class="fa-brands fa-telegram"></i> Telegram Bot</h3>
+                                    <label class="switch">
+                                        <input type="checkbox" id="telegram-enabled">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Bot Token</label>
+                                    <input type="text" id="telegram-token" placeholder="12345:ABCDE...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Chat ID</label>
+                                    <input type="text" id="telegram-chat" placeholder="-10012345678">
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="modal-footer">
-                    <button type="button" id="cancel-settings-btn" class="btn-secondary">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Configurations</button>
+                        <!-- RSS Sources Tab -->
+                        <div id="rss-sources-tab" class="tab-pane">
+                            <div class="rss-management">
+                                <div class="rss-header">
+                                    <h3>Configured Sources</h3>
+                                    <p class="section-desc">Enable or disable specific feeds. Only active sources will
+                                        be scanned for news.</p>
+                                </div>
+                                <div id="rss-source-manager-list" class="rss-manager-list">
+                                    <!-- Populated by JS -->
+                                    <div class="loading-state">Loading sources...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Config Tab -->
+                        <div id="ai-config-tab" class="tab-pane">
+                            <div class="settings-section" style="border-left: 4px solid #1a73e8;">
+                                <div class="toggle-header">
+                                    <h3><i class="fa-solid fa-brain" style="color: #1a73e8;"></i> AI Duplicate
+                                        Prevention</h3>
+                                    <label class="switch">
+                                        <input type="checkbox" id="ai-enabled">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <p style="font-size: 13px; color: #a1a1aa; margin-bottom: 12px; line-height: 1.5;">Uses
+                                    Gemini Flash to identify if different news agencies report the exact same event,
+                                    automatically cleaning your feed for a superior reading experience.</p>
+                                <div class="form-group">
+                                    <label>Gemini API Key</label>
+                                    <input type="password" id="gemini-key" placeholder="AIzaSy...">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+
+            <div class="modal-footer" style="margin-top: auto;">
+                <button type="button" id="cancel-settings-btn" class="btn-secondary">Cancel</button>
+                <button type="submit" form="settings-form" class="btn-primary">Save All Settings</button>
+            </div>
         </div>
     </div>
 
+
     <script src="app.js"></script>
 </body>
+
 </html>

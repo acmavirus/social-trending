@@ -140,11 +140,37 @@ function setupEventListeners() {
             document.getElementById('ai-enabled').checked = config.ai_deduplication_enabled || false;
             document.getElementById('gemini-key').value = config.gemini_api_key || '';
             
+            // Load RSS Sources for management
+            loadRSSSourceManager();
+            
             settingsModal.classList.remove('hidden');
         } catch (err) {
             alert('Could not load settings.');
         }
     });
+
+    // Tab Switching Logic
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            
+            // Toggle active buttons
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Toggle active panes
+            tabPanes.forEach(pane => {
+                pane.classList.remove('active');
+                if (pane.id === `${tabId}-tab`) {
+                    pane.classList.add('active');
+                }
+            });
+        });
+    });
+
 
     closeSettingsBtns.forEach(btn => btn.addEventListener('click', () => settingsModal.classList.add('hidden')));
     settingsModal.addEventListener('click', (e) => {
@@ -189,9 +215,104 @@ function setupEventListeners() {
     });
 }
 
+async function loadRSSSourceManager() {
+    const listContainer = document.getElementById('rss-source-manager-list');
+    listContainer.innerHTML = '<div class="loading-state">Loading feeds...</div>';
+
+    try {
+        const response = await fetch(`${API_BASE}/api/sources/`);
+        const sources = await response.json();
+        
+        listContainer.innerHTML = '';
+        
+        if (sources.length === 0) {
+            listContainer.innerHTML = '<div class="loading-state">No sources configured yet.</div>';
+            return;
+        }
+
+        sources.forEach(source => {
+            const item = document.createElement('div');
+            item.className = 'rss-manager-item';
+            
+            const isActive = source.is_active !== false; // Default to true if undefined
+            
+            item.innerHTML = `
+                <div class="rss-info">
+                    <div class="rss-name">${source.name}</div>
+                    <div class="rss-url">${source.url}</div>
+                </div>
+                <div class="rss-actions">
+                    <span class="rss-status-label ${isActive ? 'active' : 'inactive'}">
+                        ${isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" class="source-toggle" data-id="${source.id}" ${isActive ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                    <button class="btn-icon delete-source-btn" title="Delete Source" data-id="${source.id}">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Toggle Logic
+            const toggle = item.querySelector('.source-toggle');
+            toggle.addEventListener('change', async (e) => {
+                const newStatus = e.target.checked;
+                const statusLabel = item.querySelector('.rss-status-label');
+                
+                try {
+                    const res = await fetch(`${API_BASE}/api/sources/${source.id}/toggle`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ is_active: newStatus })
+                    });
+                    
+                    if (res.ok) {
+                        statusLabel.innerText = newStatus ? 'Active' : 'Inactive';
+                        statusLabel.className = `rss-status-label ${newStatus ? 'active' : 'inactive'}`;
+                        fetchSources();
+                    } else {
+                        throw new Error('Toggle failed');
+                    }
+                } catch (err) {
+                    alert('Could not update source status');
+                    e.target.checked = !newStatus;
+                }
+            });
+
+
+            // Delete Logic
+            const deleteBtn = item.querySelector('.delete-source-btn');
+            deleteBtn.addEventListener('click', async () => {
+                if (!confirm(`Are you sure you want to delete ${source.name}?`)) return;
+                
+                try {
+                    const res = await fetch(`${API_BASE}/api/sources/${source.id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (res.ok) {
+                        item.remove();
+                        fetchSources(); // Refresh sidebar
+                    } else {
+                        throw new Error('Delete failed');
+                    }
+                } catch (err) {
+                    alert('Could not delete source');
+                }
+            });
+
+            
+            listContainer.appendChild(item);
+        });
+    } catch (err) {
+        listContainer.innerHTML = '<div class="loading-state">Error loading sources.</div>';
+    }
+}
+
 async function fetchSources() {
     try {
-        // Changed to query list of actual configured sources
         const response = await fetch(`${API_BASE}/api/sources/`);
         const sources = await response.json();
         
@@ -204,6 +325,9 @@ async function fetchSources() {
         }
 
         sources.forEach(source => {
+            // Only show active sources in the sidebar filter
+            if (source.is_active === false) return;
+
             const li = document.createElement('li');
             li.innerHTML = `<i class="fa-solid fa-hashtag"></i> <span>${source.name}</span>`;
             li.addEventListener('click', () => {
@@ -222,6 +346,7 @@ async function fetchSources() {
         document.getElementById('source-list').innerHTML = '<li class="loading-item">Error loading sources</li>';
     }
 }
+
 
 async function fetchNews() {
     const grid = document.getElementById('news-grid');
