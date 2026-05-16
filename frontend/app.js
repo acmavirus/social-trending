@@ -142,8 +142,11 @@ function setupEventListeners() {
             
             // Load RSS Sources for management
             loadRSSSourceManager();
+            // Load Social Sources
+            loadSocialSourceManager();
             
             settingsModal.classList.remove('hidden');
+
         } catch (err) {
             alert('Could not load settings.');
         }
@@ -179,8 +182,9 @@ function setupEventListeners() {
 
     settingsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const saveBtn = settingsForm.querySelector('button[type="submit"]');
+        const saveBtn = settingsModal.querySelector('button[type="submit"]');
         saveBtn.innerText = 'Saving Configurations...';
+
         saveBtn.disabled = true;
 
         const configPayload = {
@@ -213,9 +217,128 @@ function setupEventListeners() {
             saveBtn.disabled = false;
         }
     });
+
+    // Social Sources Specific UI Logic
+    const addSocialBtn = document.getElementById('add-social-btn');
+    const cancelSocialBtn = document.getElementById('cancel-social-btn');
+    const saveSocialBtn = document.getElementById('save-social-btn');
+    const addSocialContainer = document.getElementById('add-social-form-container');
+
+    addSocialBtn.addEventListener('click', () => addSocialContainer.classList.remove('hidden'));
+    cancelSocialBtn.addEventListener('click', () => addSocialContainer.classList.add('hidden'));
+    
+    saveSocialBtn.addEventListener('click', async () => {
+        const platform = document.getElementById('social-platform').value;
+        const username = document.getElementById('social-username').value.trim();
+        
+        if (!username) return alert('Username is required');
+        
+        try {
+            const res = await fetch(`${API_BASE}/api/social/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ platform, username })
+            });
+            
+            if (res.ok) {
+                document.getElementById('social-username').value = '';
+                addSocialContainer.classList.add('hidden');
+                loadSocialSourceManager();
+            } else {
+                const err = await res.json();
+                throw new Error(err.detail || 'Failed to add');
+            }
+        } catch (err) {
+            alert(err.message);
+        }
+    });
+}
+
+
+async function loadSocialSourceManager() {
+    const listContainer = document.getElementById('social-source-manager-list');
+    listContainer.innerHTML = '<div class="loading-state">Loading accounts...</div>';
+
+    try {
+        const response = await fetch(`${API_BASE}/api/social/`);
+        const sources = await response.json();
+        
+        listContainer.innerHTML = '';
+        
+        if (sources.length === 0) {
+            listContainer.innerHTML = '<div class="loading-state">No social accounts tracked yet.</div>';
+            return;
+        }
+
+        sources.forEach(source => {
+            const item = document.createElement('div');
+            item.className = 'rss-manager-item';
+            
+            const isActive = source.is_active !== false;
+            
+            item.innerHTML = `
+                <div class="rss-info">
+                    <div class="rss-name"><i class="fa-brands fa-threads"></i> @${source.username}</div>
+                    <div class="rss-url">${source.platform}</div>
+                </div>
+                <div class="rss-actions">
+                    <span class="rss-status-label ${isActive ? 'active' : 'inactive'}">
+                        ${isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" class="social-toggle" data-id="${source.id}" ${isActive ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                    <button class="btn-icon delete-social-btn" title="Delete Account" data-id="${source.id}">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            
+            const toggle = item.querySelector('.social-toggle');
+            toggle.addEventListener('change', async (e) => {
+                const newStatus = e.target.checked;
+                const statusLabel = item.querySelector('.rss-status-label');
+                try {
+                    const res = await fetch(`${API_BASE}/api/social/${source.id}/toggle`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ is_active: newStatus })
+                    });
+                    if (res.ok) {
+                        statusLabel.innerText = newStatus ? 'Active' : 'Inactive';
+                        statusLabel.className = `rss-status-label ${newStatus ? 'active' : 'inactive'}`;
+                    }
+                } catch (err) {
+                    alert('Could not update status');
+                    e.target.checked = !newStatus;
+                }
+            });
+
+            const deleteBtn = item.querySelector('.delete-social-btn');
+            deleteBtn.addEventListener('click', async () => {
+                if (!confirm(`Stop tracking @${source.username}?`)) return;
+                try {
+                    const res = await fetch(`${API_BASE}/api/social/${source.id}`, {
+                        method: 'DELETE'
+                    });
+                    if (res.ok) {
+                        item.remove();
+                    }
+                } catch (err) {
+                    alert('Could not delete account');
+                }
+            });
+            
+            listContainer.appendChild(item);
+        });
+    } catch (err) {
+        listContainer.innerHTML = '<div class="loading-state">Error loading social sources.</div>';
+    }
 }
 
 async function loadRSSSourceManager() {
+
     const listContainer = document.getElementById('rss-source-manager-list');
     listContainer.innerHTML = '<div class="loading-state">Loading feeds...</div>';
 

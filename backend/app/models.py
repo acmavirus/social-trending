@@ -86,3 +86,26 @@ class NotificationSettings(BaseModel):
     # AI Feature Settings
     gemini_api_key: str = ""
     ai_deduplication_enabled: bool = False
+
+class SocialSourceBase(BaseModel):
+    platform: str = "Threads"
+    username: str
+    is_active: bool = True
+
+class SocialSourceInDB(SocialSourceBase):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+        json_encoders={ObjectId: str}
+    )
+
+class SocialSourceResponse(SocialSourceBase):
+    id: str
+    
+    model_config = ConfigDict(
+        populate_by_name=True
+    )
+

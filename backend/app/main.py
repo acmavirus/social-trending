@@ -11,6 +11,8 @@ from app.services.threads_service import run_threads_aggregation
 from app.routes.news import router as news_router
 from app.routes.sources import router as sources_router
 from app.routes.settings import router as settings_router
+from app.routes.social import router as social_router
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -61,6 +63,7 @@ app.add_middleware(
 app.include_router(news_router)
 app.include_router(sources_router)
 app.include_router(settings_router)
+app.include_router(social_router)
 
 @app.get("/")
 async def root():

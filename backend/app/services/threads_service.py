@@ -129,36 +129,50 @@ async def run_threads_aggregation():
     db = get_db()
     if db is None: return
     
-    # Fetch new candidates
-    candidates = await scrape_threads_profile("trending")
-    if not candidates:
-        logger.info("No candidates returned from Threads crawler.")
-        return
+    # Fetch active Threads sources from DB
+    cursor = db.social_sources.find({"platform": "Threads", "is_active": True})
+    sources = await cursor.to_list(length=100)
+    
+    if not sources:
+        # Fallback to default if none configured
+        logger.info("No Threads sources configured. Following default @trending")
+        sources = [{"username": "trending"}]
         
-    # Dedup & Persist
-    new_count = 0
-    for raw_art in candidates:
-        link = raw_art["link"]
+    for source_config in sources:
+        username = source_config["username"]
+        logger.info(f"Processing Threads account: @{username}")
         
-        # Fast check duplicate link
-        existing = await db.articles.find_one({"link": link}, {"_id": 1})
-        if existing:
+        # Fetch new candidates
+        candidates = await scrape_threads_profile(username)
+        if not candidates:
+            logger.info(f"No candidates returned from Threads crawler for @{username}.")
             continue
             
-        article = ArticleInDB(
-            **raw_art,
-            is_duplicate=False,
-            duplicate_of_title=None
-        )
-        
-        try:
-            await db.articles.insert_one(article.model_dump(by_alias=True, exclude={'id'}))
-            new_count += 1
-            # Prompt broadasting new article directly for critical trending socials
-            await broadcast_new_article(article.model_dump())
-        except DuplicateKeyError:
-            pass
-        except Exception as e:
-             logger.error(f"Failed inserting Threads article: {e}")
-             
-    logger.info(f"Threads aggregation completed. Inserted {new_count} new articles.")
+        # Dedup & Persist
+        new_count = 0
+        for raw_art in candidates:
+            link = raw_art["link"]
+            
+            # Fast check duplicate link
+            existing = await db.articles.find_one({"link": link}, {"_id": 1})
+            if existing:
+                continue
+                
+            article = ArticleInDB(
+                **raw_art,
+                is_duplicate=False,
+                duplicate_of_title=None
+            )
+            
+            try:
+                await db.articles.insert_one(article.model_dump(by_alias=True, exclude={'id'}))
+                new_count += 1
+                # Prompt broadcasting new article directly for critical trending socials
+                await broadcast_new_article(article.model_dump())
+            except DuplicateKeyError:
+                pass
+            except Exception as e:
+                 logger.error(f"Failed inserting Threads article from @{username}: {e}")
+                 
+        logger.info(f"Threads aggregation for @{username} completed. Inserted {new_count} new articles.")
+
